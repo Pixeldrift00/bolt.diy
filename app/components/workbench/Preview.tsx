@@ -220,6 +220,12 @@ export const Preview = memo(() => {
     </div>
   );
 
+  const openInNewTab = () => {
+    if (activePreview?.baseUrl) {
+      window.open(activePreview?.baseUrl, '_blank');
+    }
+  };
+
   const openInNewWindow = (size: WindowSize) => {
     if (activePreview?.baseUrl) {
       const match = activePreview.baseUrl.match(/^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/);
@@ -311,6 +317,8 @@ export const Preview = memo(() => {
             onClick={toggleFullscreen}
             title={isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
           />
+
+          <IconButton icon="i-ph:arrow-square-in" onClick={openInNewTab} title="Open Preview In New Tab" />
 
           <div className="flex items-center relative">
             <IconButton
