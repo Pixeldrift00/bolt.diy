@@ -38,6 +38,7 @@ import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/Cloud
 import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
 import TaskManagerTab from '~/components/@settings/tabs/task-manager/TaskManagerTab';
+import SyncTab from '~/components/@settings/tabs/sync/SyncTab';
 
 interface ControlPanelProps {
   open: boolean;
@@ -81,10 +82,11 @@ const TAB_DESCRIPTIONS: Record<TabType, string> = {
   update: 'Check for updates and release notes',
   'task-manager': 'Monitor system resources and processes',
   'tab-management': 'Configure visible tabs and their order',
+  sync: 'Sync your data and settings',
 };
 
 // Beta status for experimental features
-const BETA_TABS = new Set<TabType>(['task-manager', 'service-status', 'update', 'local-providers']);
+const BETA_TABS = new Set<TabType>(['task-manager', 'service-status', 'update', 'local-providers', 'sync']);
 
 const BetaLabel = () => (
   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20">
@@ -283,10 +285,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   }, [developerMode]);
 
   const getTabComponent = (tabId: TabType | 'tab-management') => {
-    if (tabId === 'tab-management') {
-      return <TabManagement />;
-    }
-
     switch (tabId) {
       case 'profile':
         return <ProfileTab />;
@@ -302,6 +300,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <CloudProvidersTab />;
       case 'local-providers':
         return <LocalProvidersTab />;
+      case 'service-status':
+        return <ServiceStatusTab />;
       case 'connection':
         return <ConnectionsTab />;
       case 'debug':
@@ -312,8 +312,10 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <UpdateTab />;
       case 'task-manager':
         return <TaskManagerTab />;
-      case 'service-status':
-        return <ServiceStatusTab />;
+      case 'tab-management':
+        return <TabManagement />;
+      case 'sync':
+        return <SyncTab />;
       default:
         return null;
     }

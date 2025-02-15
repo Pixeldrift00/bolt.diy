@@ -406,9 +406,12 @@ export default function LocalProvidersTab() {
             </motion.div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold text-bolt-elements-textPrimary">Local AI Models</h2>
+                <h2 className="text-lg font-semibold text-bolt-elements-textPrimary">Local Providers</h2>
+                <span className="px-2 py-0.5 text-xs rounded-md bg-purple-500/10 text-purple-500 font-medium">
+                  BETA
+                </span>
               </div>
-              <p className="text-sm text-bolt-elements-textSecondary">Configure and manage your local AI providers</p>
+              <p className="text-sm text-bolt-elements-textSecondary">Configure and manage your local LLM providers</p>
             </div>
           </div>
 
