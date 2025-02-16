@@ -29,16 +29,16 @@ for (const dir of dirsToRemove) {
   }
 }
 
-// Run pnpm commands
+// Run npm commands
 console.log('\n📦 Reinstalling dependencies...');
 
 try {
-  execSync('pnpm install', { stdio: 'inherit' });
+  execSync('npm install', { stdio: 'inherit' });
   console.log('\n🗑️  Clearing pnpm cache...');
-  execSync('pnpm cache clean', { stdio: 'inherit' });
+  execSync('npm cache clean', { stdio: 'inherit' });
   console.log('\n🏗️  Rebuilding project...');
-  execSync('pnpm build', { stdio: 'inherit' });
-  console.log('\n✨ Clean completed! You can now run pnpm dev');
+  execSync('npm build', { stdio: 'inherit' });
+  console.log('\n✨ Clean completed! You can now run npm dev');
 } catch (err) {
   console.error('\n❌ Error during cleanup:', err.message);
   process.exit(1);
