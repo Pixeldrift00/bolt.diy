@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Install pnpm
-curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+# Install pnpm globally
+npm install -g pnpm
 
 # Check if pnpm installation was successful
 if ! command -v pnpm &> /dev/null
