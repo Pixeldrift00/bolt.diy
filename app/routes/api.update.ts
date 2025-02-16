@@ -428,7 +428,7 @@ export const action: ActionFunction = async ({ request }) => {
             progress: 0,
           });
 
-          await execAsync('pnpm install');
+          await execAsync('npm install');
 
           sendProgress({
             stage: 'install',
@@ -443,7 +443,7 @@ export const action: ActionFunction = async ({ request }) => {
             progress: 0,
           });
 
-          await execAsync('pnpm build');
+          await execAsync('npm build');
 
           sendProgress({
             stage: 'build',
