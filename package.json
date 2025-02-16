@@ -28,7 +28,7 @@
     "clean": "node scripts/clean.js"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=20.15.1"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "1.0.6",
@@ -144,7 +144,6 @@
     "husky": "9.1.7",
     "is-ci": "^3.0.1",
     "node-fetch": "^3.3.2",
-    "pnpm": "^9.4.0",
     "prettier": "^3.4.1",
     "sass-embedded": "^1.81.0",
     "typescript": "^5.7.2",
