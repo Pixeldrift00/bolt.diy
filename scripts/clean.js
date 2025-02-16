@@ -34,7 +34,7 @@ console.log('\n📦 Reinstalling dependencies...');
 
 try {
   execSync('npm install', { stdio: 'inherit' });
-  console.log('\n🗑️  Clearing pnpm cache...');
+  console.log('\n🗑️  Clearing npm cache...');
   execSync('npm cache clean', { stdio: 'inherit' });
   console.log('\n🏗️  Rebuilding project...');
   execSync('npm build', { stdio: 'inherit' });
