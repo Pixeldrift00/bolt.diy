@@ -1,10 +1,10 @@
-ARG BASE=node:20.18.0
+ARG BASE=node:20.15.1
 FROM ${BASE} AS base
 
 WORKDIR /app
 
 # Install dependencies (this step is cached as long as the dependencies don't change)
-COPY package.json package-lock.yaml ./
+COPY package.json ./
 
 RUN npm install
 
