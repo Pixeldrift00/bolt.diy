@@ -28,7 +28,7 @@
     "clean": "node scripts/clean.js"
   },
   "engines": {
-    "node": ">=20.15.1"
+    "node": ">=20.5.1"
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "1.0.6",
