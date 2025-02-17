@@ -153,9 +153,7 @@ export default defineConfig((config: { mode?: string }) => ({
       generateScopedName: '[name]__[local]___[hash:base64:5]'
     },
     preprocessorOptions: {
-      scss: {
-        additionalData: `@import "./app/styles/variables.scss";`
-      },
+      scss: {}
     },
   },
   optimizeDeps: {
