@@ -85,11 +85,10 @@ export default defineConfig((config: { mode?: string }) => ({
       },
       protocolImports: true,
       overrides: {
-        http2: require.resolve('node-stdlib-browser/mock/http2'),
-          constants: require.resolve('node-stdlib-browser/mock/constants')
-        }
+        http2: 'node-stdlib-browser/mock/http2',
+        constants: 'node-stdlib-browser/mock/constants'
       }
-    ),
+    }),
     // Temporarily disable Cloudflare dev proxy due to GLIBC compatibility issues
     // ...(config.mode !== 'test' ? [remixCloudflareDevProxy({
     //   persist: true,
