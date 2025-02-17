@@ -1,6 +1,7 @@
 import { cloudflareDevProxyVitePlugin as remixCloudflareDevProxy, vitePlugin as remixVitePlugin } from '@remix-run/dev';
 import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
+import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -92,8 +93,20 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      rollupOptions: {
+        external: ['virtual:uno.css'],
+        output: {
+          manualChunks: {
+            vendor: [/node_modules/],
+          },
+        },
+      },
     },
     plugins: [
+      react({
+        jsxRuntime: 'automatic',
+        fastRefresh: true,
+      }),
       nodePolyfills({
         include: ['path', 'buffer', 'process'],
       }),
@@ -119,12 +132,25 @@ export default defineConfig((config) => {
       'TOGETHER_API_BASE_URL',
     ],
     css: {
+      modules: {
+        localsConvention: 'camelCase',
+        generateScopedName: '[name]__[local]___[hash:base64:5]'
+      },
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler',
+          implementation: require('sass'),
+          sassOptions: {
+            fiber: false,
+            outputStyle: 'compressed'
+          },
+          additionalData: `@import "./app/styles/variables.scss";`
         },
       },
     },
+    optimizeDeps: {
+      include: ['react', 'react-dom'],
+      exclude: ['@remix-run/cloudflare-pages']
+    }
   };
 });
 
