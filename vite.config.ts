@@ -110,6 +110,10 @@ export default defineConfig((config: { mode?: string }) => ({
   ],
   build: {
     target: 'esnext',
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    },
     rollupOptions: {
       external: ['virtual:uno.css'],
       output: {
