@@ -77,7 +77,7 @@ export default defineConfig((config: { mode?: string }) => ({
       fastRefresh: true,
     }),
     nodePolyfills({
-      include: ['path', 'buffer', 'process', 'stream', 'http', 'https', 'url', 'util', 'events', 'assert', 'os'],
+      include: ['path', 'buffer', 'process', 'stream', 'http', 'https', 'url', 'util', 'events', 'assert', 'os', 'http2', 'constants'],
       globals: {
         Buffer: true,
         global: true,
