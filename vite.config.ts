@@ -3,7 +3,6 @@ import UnoCSS from 'unocss/vite';
 import { defineConfig, type ViteDevServer } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import * as dotenv from 'dotenv';
 import { execSync } from 'child_process';
@@ -46,7 +45,6 @@ const getPackageJson = () => {
   try {
     const pkgPath = join(process.cwd(), 'package.json');
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-
     return {
       name: pkg.name,
       description: pkg.description,
@@ -54,7 +52,7 @@ const getPackageJson = () => {
       dependencies: pkg.dependencies || {},
       devDependencies: pkg.devDependencies || {},
       peerDependencies: pkg.peerDependencies || {},
-      optionalDependencies: pkg.optionalDependencies || {},
+      optionalDependencies: pkg.optionalDependencies || {}
     };
   } catch {
     return {
@@ -64,7 +62,7 @@ const getPackageJson = () => {
       dependencies: {},
       devDependencies: {},
       peerDependencies: {},
-      optionalDependencies: {},
+      optionalDependencies: {}
     };
   }
 };
@@ -72,87 +70,89 @@ const getPackageJson = () => {
 const pkg = getPackageJson();
 const gitInfo = getGitInfo();
 
-export default defineConfig((config) => {
-  return {
-    define: {
-      __COMMIT_HASH: JSON.stringify(gitInfo.commitHash),
-      __GIT_BRANCH: JSON.stringify(gitInfo.branch),
-      __GIT_COMMIT_TIME: JSON.stringify(gitInfo.commitTime),
-      __GIT_AUTHOR: JSON.stringify(gitInfo.author),
-      __GIT_EMAIL: JSON.stringify(gitInfo.email),
-      __GIT_REMOTE_URL: JSON.stringify(gitInfo.remoteUrl),
-      __GIT_REPO_NAME: JSON.stringify(gitInfo.repoName),
-      __APP_VERSION: JSON.stringify(process.env.npm_package_version),
-      __PKG_NAME: JSON.stringify(pkg.name),
-      __PKG_DESCRIPTION: JSON.stringify(pkg.description),
-      __PKG_LICENSE: JSON.stringify(pkg.license),
-      __PKG_DEPENDENCIES: JSON.stringify(pkg.dependencies),
-      __PKG_DEV_DEPENDENCIES: JSON.stringify(pkg.devDependencies),
-      __PKG_PEER_DEPENDENCIES: JSON.stringify(pkg.peerDependencies),
-      __PKG_OPTIONAL_DEPENDENCIES: JSON.stringify(pkg.optionalDependencies),
-    },
-    build: {
-      target: 'esnext',
-      rollupOptions: {
-        external: ['virtual:uno.css'],
-        output: {
-          manualChunks: {
-            vendor: [/node_modules/],
-          },
+export default defineConfig((config) => ({
+  plugins: [
+    react({
+      jsxRuntime: 'automatic',
+      fastRefresh: true,
+    }),
+    nodePolyfills({
+      include: ['path', 'buffer', 'process'],
+    }),
+    config.mode !== 'test' && remixCloudflareDevProxy(),
+    remixVitePlugin({
+      future: {
+        v3_fetcherPersist: true,
+        v3_relativeSplatPath: true,
+        v3_throwAbortReason: true,
+        v3_lazyRouteDiscovery: true,
+      },
+    }),
+    UnoCSS(),
+    tsconfigPaths(),
+    chrome129IssuePlugin(),
+    config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
+  ],
+  build: {
+    target: 'esnext',
+    rollupOptions: {
+      external: ['virtual:uno.css'],
+      output: {
+        manualChunks: {
+          vendor: [/node_modules/],
         },
       },
     },
-    plugins: [
-      react({
-        jsxRuntime: 'automatic',
-        fastRefresh: true,
-      }),
-      nodePolyfills({
-        include: ['path', 'buffer', 'process'],
-      }),
-      config.mode !== 'test' && remixCloudflareDevProxy(),
-      remixVitePlugin({
-        future: {
-          v3_fetcherPersist: true,
-          v3_relativeSplatPath: true,
-          v3_throwAbortReason: true,
-          v3_lazyRouteDiscovery: true,
+  },
+  server: {
+    port: 5173,
+    host: process.env.RUNNING_IN_DOCKER === 'true' ? '0.0.0.0' : 'localhost',
+  },
+  define: {
+    __COMMIT_HASH: JSON.stringify(gitInfo.commitHash),
+    __GIT_BRANCH: JSON.stringify(gitInfo.branch),
+    __GIT_COMMIT_TIME: JSON.stringify(gitInfo.commitTime),
+    __GIT_AUTHOR: JSON.stringify(gitInfo.author),
+    __GIT_EMAIL: JSON.stringify(gitInfo.email),
+    __GIT_REMOTE_URL: JSON.stringify(gitInfo.remoteUrl),
+    __GIT_REPO_NAME: JSON.stringify(gitInfo.repoName),
+    __APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    __PKG_NAME: JSON.stringify(pkg.name),
+    __PKG_DESCRIPTION: JSON.stringify(pkg.description),
+    __PKG_LICENSE: JSON.stringify(pkg.license),
+    __PKG_DEPENDENCIES: JSON.stringify(pkg.dependencies),
+    __PKG_DEV_DEPENDENCIES: JSON.stringify(pkg.devDependencies),
+    __PKG_PEER_DEPENDENCIES: JSON.stringify(pkg.peerDependencies),
+    __PKG_OPTIONAL_DEPENDENCIES: JSON.stringify(pkg.optionalDependencies),
+  },
+  envPrefix: [
+    'VITE_',
+    'OPENAI_LIKE_API_BASE_URL',
+    'OLLAMA_API_BASE_URL',
+    'LMSTUDIO_API_BASE_URL',
+    'TOGETHER_API_BASE_URL',
+  ],
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]___[hash:base64:5]'
+    },
+    preprocessorOptions: {
+      scss: {
+        implementation: require('sass'),
+        sassOptions: {
+          fiber: false,
+          outputStyle: 'compressed'
         },
-      }),
-      UnoCSS(),
-      tsconfigPaths(),
-      chrome129IssuePlugin(),
-      config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
-    ],
-    envPrefix: [
-      'VITE_',
-      'OPENAI_LIKE_API_BASE_URL',
-      'OLLAMA_API_BASE_URL',
-      'LMSTUDIO_API_BASE_URL',
-      'TOGETHER_API_BASE_URL',
-    ],
-    css: {
-      modules: {
-        localsConvention: 'camelCase',
-        generateScopedName: '[name]__[local]___[hash:base64:5]'
-      },
-      preprocessorOptions: {
-        scss: {
-          implementation: require('sass'),
-          sassOptions: {
-            fiber: false,
-            outputStyle: 'compressed'
-          },
-          additionalData: `@import "./app/styles/variables.scss";`
-        },
+        additionalData: `@import "./app/styles/variables.scss";`
       },
     },
-    optimizeDeps: {
-      include: ['react', 'react-dom'],
-      exclude: ['@remix-run/cloudflare-pages']
-    }
-  };
-});
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: ['@remix-run/cloudflare-pages']
+  }
+}));
 
 function chrome129IssuePlugin() {
   return {
