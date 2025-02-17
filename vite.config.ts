@@ -112,7 +112,9 @@ export default defineConfig((config: { mode?: string }) => ({
     target: 'esnext',
     commonjsOptions: {
       include: [/node_modules/],
-      transformMixedEsModules: true
+      transformMixedEsModules: true,
+      defaultIsModuleExports: true,
+      strictRequires: true
     },
     rollupOptions: {
       external: ['virtual:uno.css'],
@@ -122,6 +124,16 @@ export default defineConfig((config: { mode?: string }) => ({
         },
       },
     },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: ['@remix-run/cloudflare-pages'],
+    esbuildOptions: {
+      target: 'esnext',
+      supported: {
+        'dynamic-import': true
+      }
+    }
   },
   server: {
     port: 5173,
