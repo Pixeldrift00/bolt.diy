@@ -77,7 +77,13 @@ export default defineConfig((config: { mode?: string }) => ({
       fastRefresh: true,
     }),
     nodePolyfills({
-      include: ['path', 'buffer', 'process', 'stream'],
+      include: ['path', 'buffer', 'process', 'stream', 'http', 'https', 'url', 'util', 'events', 'assert', 'os'],
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true
+      },
+      protocolImports: true
     }),
     // Temporarily disable Cloudflare dev proxy due to GLIBC compatibility issues
     // ...(config.mode !== 'test' ? [remixCloudflareDevProxy({
