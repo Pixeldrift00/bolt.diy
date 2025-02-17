@@ -127,6 +127,13 @@ export default defineConfig((config: { mode?: string }) => ({
       },
     },
   },
+  resolve: {
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+    mainFields: ['module', 'jsnext:main', 'jsnext', 'main'],
+    alias: {
+      '~': '/app'
+    }
+  },
   optimizeDeps: {
     include: ['react', 'react-dom'],
     exclude: ['@remix-run/cloudflare-pages'],
@@ -134,7 +141,9 @@ export default defineConfig((config: { mode?: string }) => ({
       target: 'esnext',
       supported: {
         'dynamic-import': true
-      }
+      },
+      mainFields: ['module', 'main'],
+      platform: 'browser'
     }
   },
   server: {
