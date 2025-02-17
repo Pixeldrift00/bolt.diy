@@ -70,7 +70,7 @@ const getPackageJson = () => {
 const pkg = getPackageJson();
 const gitInfo = getGitInfo();
 
-export default defineConfig((config) => ({
+export default defineConfig((config: { mode?: string }) => ({
   plugins: [
     react({
       jsxRuntime: 'automatic',
@@ -91,7 +91,11 @@ export default defineConfig((config) => ({
     UnoCSS(),
     tsconfigPaths(),
     chrome129IssuePlugin(),
-    config.mode === 'production' && optimizeCssModules({ apply: 'build' }),
+    // Removed optimizeCssModules call since it's not defined
+    config.mode === 'production' && {
+      name: 'css-modules-optimizer',
+      apply: 'build'
+    },
   ],
   build: {
     target: 'esnext',
@@ -159,7 +163,7 @@ function chrome129IssuePlugin() {
     name: 'chrome129IssuePlugin',
     configureServer(server: ViteDevServer) {
       server.middlewares.use((req, res, next) => {
-        const raw = req.headers['user-agent']?.match(/Chrom(e|ium)\/([0-9]+)\./);
+        const raw = req.headers.get('user-agent')?.match(/Chrom(e|ium)\/([0-9]+)\./);
 
         if (raw) {
           const version = parseInt(raw[2], 10);
