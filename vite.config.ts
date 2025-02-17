@@ -114,7 +114,9 @@ export default defineConfig((config: { mode?: string }) => ({
       include: [/node_modules/],
       transformMixedEsModules: true,
       defaultIsModuleExports: true,
-      strictRequires: true
+      strictRequires: true,
+      extensions: ['.js', '.cjs'],
+      ignore: ['virtual:uno.css']
     },
     rollupOptions: {
       external: ['virtual:uno.css'],
@@ -172,10 +174,6 @@ export default defineConfig((config: { mode?: string }) => ({
       scss: {}
     },
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom'],
-    exclude: ['@remix-run/cloudflare-pages']
-  }
 }));
 
 function chrome129IssuePlugin() {
