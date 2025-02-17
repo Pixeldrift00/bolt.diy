@@ -77,17 +77,13 @@ export default defineConfig((config: { mode?: string }) => ({
       fastRefresh: true,
     }),
     nodePolyfills({
-      include: ['path', 'buffer', 'process', 'stream', 'http', 'https', 'url', 'util', 'events', 'assert', 'os', 'http2', 'constants'],
+      include: ['path', 'buffer', 'process', 'stream', 'http', 'https', 'url', 'util', 'events', 'assert', 'os'],
       globals: {
         Buffer: true,
         global: true,
         process: true
       },
-      protocolImports: true,
-      overrides: {
-        http2: 'node-stdlib-browser/mock/http2',
-        constants: 'node-stdlib-browser/mock/constants'
-      }
+      protocolImports: true
     }),
     // Temporarily disable Cloudflare dev proxy due to GLIBC compatibility issues
     // ...(config.mode !== 'test' ? [remixCloudflareDevProxy({
