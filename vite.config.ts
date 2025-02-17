@@ -79,7 +79,19 @@ export default defineConfig((config: { mode?: string }) => ({
     nodePolyfills({
       include: ['path', 'buffer', 'process'],
     }),
-    config.mode !== 'test' && remixCloudflareDevProxy(),
+    // Temporarily disable Cloudflare dev proxy due to GLIBC compatibility issues
+    // ...(config.mode !== 'test' ? [remixCloudflareDevProxy({
+    //   persist: true,
+    //   miniflare: {
+    //     upstream: {
+    //       url: 'http://localhost:5173',
+    //       timeout: 30000
+    //     },
+    //     workers: {
+    //       handleTimeout: 30000
+    //     }
+    //   }
+    // })] : []),
     remixVitePlugin({
       future: {
         v3_fetcherPersist: true,
@@ -91,11 +103,10 @@ export default defineConfig((config: { mode?: string }) => ({
     UnoCSS(),
     tsconfigPaths(),
     chrome129IssuePlugin(),
-    // Removed optimizeCssModules call since it's not defined
-    config.mode === 'production' && {
+    ...(config.mode === 'production' ? [{
       name: 'css-modules-optimizer',
-      apply: 'build'
-    },
+      apply: 'build' as const
+    }] : [])
   ],
   build: {
     target: 'esnext',
@@ -143,11 +154,6 @@ export default defineConfig((config: { mode?: string }) => ({
     },
     preprocessorOptions: {
       scss: {
-        implementation: require('sass'),
-        sassOptions: {
-          fiber: false,
-          outputStyle: 'compressed'
-        },
         additionalData: `@import "./app/styles/variables.scss";`
       },
     },
